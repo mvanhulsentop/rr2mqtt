@@ -4,9 +4,7 @@ const Roborock = require("./main");
 const mqtt = require("mqtt");
 
 class Rr2MqttMain {
-
 	constructor() {
-
 		const that = this;
 		this.localMqttUrl = process.env["LOCAL_MQTT"] || "undefined";
 		this.localMqttPrefix = "aaa-rr2";
@@ -19,7 +17,7 @@ class Rr2MqttMain {
 				enable_map_creation: true,
 				map_creation_interval: 60,
 				updateInterval: 30,
-			}
+			},
 		});
 
 		// submit all rr state updates to local mqtt
@@ -41,7 +39,6 @@ class Rr2MqttMain {
 		this.mqttClient = mqtt.connect(this.localMqttUrl, {});
 		this.mqttClient.on("message", this._onMessageCallback.bind(this));
 		this.mqttClient.on("connect", () => {
-
 			that.roborock.log.info("Local mqqt client connected!");
 
 			// submit all states after a connect
@@ -62,13 +59,12 @@ class Rr2MqttMain {
 	}
 
 	/**
-		* x
-		* @param {string} topic x
-		* @param {Buffer} message x
-		*/
+	 * x
+	 * @param {string} topic x
+	 * @param {Buffer} message x
+	 */
 	_onMessageCallback(topic, message) {
 		(async (topic, message) => {
-
 			const data = JSON.parse(message.toString());
 
 			// const data = JSON.stringify(message.toJSON());
@@ -82,11 +78,10 @@ class Rr2MqttMain {
 				const command = idSegments[3];
 				await this._onCommand(command, data, duid);
 			}
-
-		})(topic, message).catch(error => {
+		})(topic, message).catch((error) => {
 			this.roborock.log.error(error);
 		});
-	};
+	}
 
 	async _onCommand(command, data, duid) {
 		if (command === "app_segment_clean") {
@@ -102,7 +97,7 @@ class Rr2MqttMain {
 				throw new Error(`Room numbers are not of type array!'`);
 			}
 
-			data.rooms.forEach(room => {
+			data.rooms.forEach((room) => {
 				if (!Number.isInteger(Number(room))) {
 					throw new Error(`Room number '${room} is not a valid number!'`);
 				}
@@ -129,15 +124,13 @@ class Rr2MqttMain {
 			// 	}
 			// }
 
-
 			// Object.entries(this.roborock.objects).forEach(([key, value]) => {
 			// 	if (key.startsWith(`Devices.${duid}.floors.${roomFloor.val}.`)) {
 			// 		console.warn(`XXXXXXXXXXX -> ${key} - ${value} --> ${key.split(".")[4]}`);
 			// 		await this.roborock.setStateAsync(key, rooms.includes(Number(key.split(".")[4])), true);
 			// 	}
 			// });
-
-		}// else {
+		} // else {
 
 		this.roborock.setStateAsync(`Devices.${duid}.commands.${command}`, { val: data, ack: false }, false);
 		// }
@@ -155,7 +148,6 @@ class Rr2MqttMain {
 			const topic = `${this.localMqttPrefix}/${type}/${key}`;
 
 			if (type === "states") {
-
 				// this.mqttClient.publish(topic, JSON.stringify(state.val));
 
 				const obj = this.roborock.objects[id];
@@ -168,13 +160,11 @@ class Rr2MqttMain {
 				} else {
 					this.mqttClient.publish(topic, JSON.stringify(state.val));
 				}
-
 			} else {
 				this.mqttClient.publish(topic, JSON.stringify(state));
 			}
 		}
-	};
-
+	}
 }
 
 const main = async () => {
