@@ -7,7 +7,7 @@ WORKDIR /app
 
 RUN git clone -b 'v0.6.17' --single-branch --depth 1 https://github.com/copystring/ioBroker.roborock.git .
 
-RUN npm ci --omit=dev && npm install jszip
+RUN npm remove @iobroker/adapter-core && npm ci --omit=dev && npm install jszip
 
 #Production stage
 FROM node:18-alpine AS production

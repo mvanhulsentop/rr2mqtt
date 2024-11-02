@@ -6,7 +6,7 @@ cp ./rr2mqtt-main.js ./ioBroker.roborock
 
 cd ./ioBroker.roborock
 
-npm ci --omit=dev && npm install jszip mqtt
+npm npm remove @iobroker/adapter-core && npm ci --omit=dev && npm install jszip
 
 #patch main.js file to use the modified adapter
 sed -i 's/require("@iobroker\/adapter-core")/require(".\/rr2mqtt-adapter")/g' main.js

@@ -51,7 +51,7 @@ class Rr2MqttMain {
 			that._logger.info("Local MQTT client connected!");
 
 			// submit ioBroker roborock adapter version
-			this.mqttClient.publish(`${this.localMqttPrefix}/objects/version/iobroker-adapter`, (version || "unknown"));
+			this.mqttClient.publish(`${this.localMqttPrefix}/states/version/iobroker-adapter`, (version || "unknown"));
 
 			// submit all states after a connect
 			Object.entries(that.rradapter.objects).forEach(([id, obj]) => {
@@ -71,10 +71,10 @@ class Rr2MqttMain {
 	}
 
 	/**
-		* x
-		* @param {string} topic x
-		* @param {Buffer} message x
-		*/
+	* Received a local MQTT message
+	* @param {string} topic The MQTT topic
+	* @param {Buffer} message The raw message
+	*/
 	_onMessageCallback(topic, message) {
 		(async (topic, message) => {
 
@@ -98,9 +98,9 @@ class Rr2MqttMain {
 
 	/**
 	 * Executes an command event
-	 * @param {*} command Command id
-	 * @param {*} data Payload data as object (JSON)
-	 * @param {*} duid Device Id
+	 * @param {string} command Command id
+	 * @param {any} data Payload data as object (JSON)
+	 * @param {string} duid Device Id
 	 */
 	async _onCommand(command, data, duid) {
 		if (command === "app_segment_clean") {

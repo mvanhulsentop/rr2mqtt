@@ -36,25 +36,8 @@ class FakeAdapter extends EventEmitter {
 		 */
 		this.stateSubscriptions = [];
 
-		this._logger = {
-			log(message, ...optionalParams) {
-				console.log(message, optionalParams);
-			},
-			error(message, ...optionalParams) {
-				console.error(message, optionalParams);
-			},
-			info(message, ...optionalParams) {
-				console.info(message, optionalParams);
-			},
-			debug(message, ...optionalParams) {
-				console.debug(message, optionalParams);
-			},
-			warn(message, ...optionalParams) {
-				console.warn(message, optionalParams);
-			}
-		};
-
-		this.log = this._logger;
+		this._logger = console;
+		this.log = console;
 
 		// create data directory if it  not exists
 		if (!fs.existsSync("./data")) {
@@ -137,21 +120,26 @@ class FakeAdapter extends EventEmitter {
 
 		// const oldState = this.states[id];
 
+		// update global state
 		this.states[id] = state0;
 
+		// emit this update
 		this.emit("stateUpdate", id, state0);
 
-		// if (JSON.stringify(oldState) !== JSON.stringify(state0)) {
-
+		// write file if the state is the rr clientID, we need this after a restart
 		if (id == "clientID") {
 			await this._writeStatesToFile();
 		}
-		this.emitStateChange(id, state0);
-		// }
 
+		// emit state change, needed for rr adapter
+		this.emitStateChange(id, state0);
+
+		// write home data to data folder for debugging purpose
 		if (id === "HomeData") {
 			await this._writeToFile("homedata.json", JSON.parse(state0.val));
 		}
+
+		// write user data to data folder for debugging purpose
 		if (id === "UserData") {
 			await this._writeToFile("userdata.json", JSON.parse(state0.val));
 		}
@@ -187,14 +175,7 @@ class FakeAdapter extends EventEmitter {
 	}
 
 	async setStateChangedAsync(id, state) {
-
-		// const state0 = flag ? { val: state, ack: true } : state;
 		const oldState = this.states[id];
-
-		// this.states[id] = state0;
-
-		// this.emit("stateUpdate", id, state0);
-
 		if (!oldState || JSON.stringify(oldState.val) !== JSON.stringify(state.val)) {
 			await this.setStateAsync(id, state);
 		}
