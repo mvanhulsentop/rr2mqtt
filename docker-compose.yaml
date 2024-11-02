@@ -1,0 +1,13 @@
+services:
+  iobroker-rr2mqtt:
+    build:
+      context: .
+      target: production
+    volumes:
+      - "./data:/app/data"
+    env_file: "config.env"
+    # - or-
+    # environment:
+    #   LOCAL_MQTT: "mqtt://mqtt-server:1883"
+    #   RR_USERNAME: "mail-address"
+    #   RR_PASSWORD: "password"
