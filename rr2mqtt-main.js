@@ -23,7 +23,10 @@ class Rr2MqttMain {
 				username: process.env["RR_USERNAME"],
 				password: process.env["RR_PASSWORD"],
 				enable_map_creation: true,
-				map_creation_interval: 60,
+				map_creation_interval: 30,
+				map_scale: 4,
+
+				webserverPort: 8081,
 				updateInterval: 30,
 			}
 		});
@@ -51,7 +54,7 @@ class Rr2MqttMain {
 			that._logger.info("Local MQTT client connected!");
 
 			// submit ioBroker roborock adapter version
-			this.mqttClient.publish(`${this.localMqttPrefix}/states/version/iobroker-adapter`, (version || "unknown"));
+			this._publishMqtt(`${this.localMqttPrefix}/states/version/iobroker-adapter`, (version || "unknown"));
 
 			// submit all states after a connect
 			Object.entries(that.rradapter.objects).forEach(([id, obj]) => {
@@ -86,9 +89,11 @@ class Rr2MqttMain {
 			const idSegments = id.split(".");
 			const duid = idSegments[1];
 
-			if (idSegments[0] === "Devices" && idSegments[2] === "commands") {
+			if (idSegments[0] === "Devices" && (idSegments[2] === "commands" || idSegments[2] === "programs")) {
 				const command = idSegments[3];
 				await this._onCommand(command, data, duid);
+
+
 			}
 
 		})(topic, message).catch(error => {
@@ -140,37 +145,58 @@ class Rr2MqttMain {
 	}
 
 	/**
+	 * x
+	 * @param {string} topic x
+	 * @param {string} message x
+	 */
+	_publishMqtt(topic, message) {
+		if (this.mqttClient && this.mqttClient.connected) {
+
+			if (topic.endsWith("water_box_custom_mode")) {
+				console.warn("Warte");
+			}
+
+			if (message && message.startsWith("\"data:image/")) {
+				this._logger.info(`MQTT ${topic} : ${message.substring(0, 30)}...<truncated>..."`);
+			} else if(topic && topic.endsWith("map/mapData")) {
+				this._logger.info(`MQTT ${topic} : ${message.substring(0, 30)}...<truncated>..."`);
+			} else {
+				this._logger.info(`MQTT ${topic} : ${message}`);
+			}
+			this.mqttClient.publish(topic, message);
+		}
+	}
+
+	/**
 	 * Submits a state or object to local mqtt broker
 	 * @param {string} id ioBroker Id
 	 * @param {{val: any, ack: boolean}} state ioBroker state
 	 * @param {"objects" | "states"} type Type of message
 	 */
 	publishMqtt(id, state, type) {
-		if (this.mqttClient && this.mqttClient.connected) {
-			const key = id.replaceAll(".", "/");
-			const topic = `${this.localMqttPrefix}/${type}/${key}`;
 
-			if (type === "states") {
+		const key = id.replaceAll(".", "/");
+		const topic = `${this.localMqttPrefix}/${type}/${key}`;
 
-				if (!this.translateMqttValues) {
-					this.mqttClient.publish(topic, JSON.stringify(state.val));
+		if (type === "states") {
 
-				} else {
-					const obj = this.rradapter.objects[id];
-					const rawValue = JSON.stringify(state.val);
+			if (!this.translateMqttValues) {
+				this._publishMqtt(topic, JSON.stringify(state.val));
 
-					if (obj && obj.common && obj.common.states && obj.common.states[rawValue]) {
-						this.mqttClient.publish(topic, obj.common.states[rawValue]);
-					} else {
-						this.mqttClient.publish(topic, JSON.stringify(state.val));
-					}
-				}
 			} else {
-				this.mqttClient.publish(topic, JSON.stringify(state));
-			}
-		}
-	};
+				const obj = this.rradapter.objects[id];
+				const rawValue = JSON.stringify(state.val);
 
+				if (obj && obj.common && obj.common.states && obj.common.states[rawValue]) {
+					this._publishMqtt(topic, obj.common.states[rawValue]);
+				} else {
+					this._publishMqtt(topic, JSON.stringify(state.val));
+				}
+			}
+		} else {
+			this._publishMqtt(topic, JSON.stringify(state));
+		}
+	}
 }
 
 const main = async () => {

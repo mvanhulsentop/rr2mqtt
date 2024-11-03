@@ -56,6 +56,39 @@ class FakeAdapter extends EventEmitter {
 		// }
 	}
 
+	/**
+	 * x
+	 * @param {any} dps x
+	 * @returns xxx
+	 */
+	async modify102(dps, duid) {
+		this._logger.warn(`Customize!! ${JSON.stringify(dps)}`);
+		// this.
+		for (const [key, value] of Object.entries(dps)) {
+			// if (Number.isInteger(key)) {
+			const homeData = JSON.parse(this.states["HomeData"].val);
+
+			const device = homeData.devices.find(device => device.duid === duid);
+			const product = homeData.products.find(product => product.id === device.productId);
+
+			const se = product.schema.find(se => se.id === String(key));
+
+			if (se) {
+				this.setStateAsync(`Devices.${duid}.deviceStatus.${se.code}`, value, true).catch(error => {
+					throw error;
+				});
+			}
+
+
+			console.warn(`${JSON.stringify(se)}`);
+			// [].find(product)
+			// if (homeData.products)
+			// }
+		}
+
+		return dps;
+	}
+
 	async _writeToFile(filename, data) {
 		fs.writeFileSync(`./data/${filename}`, JSON.stringify(data, null, 2));
 	}
@@ -106,7 +139,7 @@ class FakeAdapter extends EventEmitter {
 	}
 
 	async delObjectAsync(id) {
-		this._logger.log(`deleteStateAsync('${id}')`);
+		// this._logger.log(`deleteStateAsync('${id}')`);
 		delete this.states[id];
 
 		await this._writeStatesToFile();
@@ -116,7 +149,7 @@ class FakeAdapter extends EventEmitter {
 
 		const state0 = flag ? { val: state, ack: true } : state;
 
-		this._logger.log(`setStateAsync('${id}', '${JSON.stringify(state0)}, ${flag}')`);
+		// this._logger.log(`setStateAsync('${id}', '${JSON.stringify(state0)}, ${flag}')`);
 
 		// const oldState = this.states[id];
 
@@ -150,14 +183,14 @@ class FakeAdapter extends EventEmitter {
 	}
 
 	async setObjectNotExistsAsync(id, state) {
-		this._logger.log(`setObjectNotExistsAsync('${id}', '${JSON.stringify(state)}')`);
+		// this._logger.log(`setObjectNotExistsAsync('${id}', '${JSON.stringify(state)}')`);
 		if (!this.objects[id]) {
 			await this.setObjectAsync(id, state);
 		}
 	}
 
 	async setObjectAsync(id, state) {
-		this._logger.log(`setObjectAsync('${id}', '${JSON.stringify(state)}')`);
+		// this._logger.log(`setObjectAsync('${id}', '${JSON.stringify(state)}')`);
 		this.objects[id] = state;
 
 		this.emit("objectUpdate", id, state);

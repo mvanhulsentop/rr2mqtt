@@ -5,7 +5,9 @@ services:
       target: production
     volumes:
       - "./data:/app/data"
-    env_file: "config.env"
+    env_file:
+      - path: "./config.env"
+        required: true
     # - or-
     # environment:
     #   LOCAL_MQTT: "mqtt://mqtt-server:1883"
