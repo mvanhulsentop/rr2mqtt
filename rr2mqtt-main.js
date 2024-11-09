@@ -47,6 +47,12 @@ class Rr2MqttMain {
 			that.mqttClient.subscribe(topic);
 		});
 
+		this.rradapter.on("unknownMessage102", (duid, dps) => {
+			this.rradapter.modify102(duid, dps).catch(error => {
+				this._logger.error(error);
+			});
+		});
+
 		this.mqttClient = mqtt.connect(this.localMqttUrl, {});
 		this.mqttClient.on("message", this._onMessageCallback.bind(this));
 		this.mqttClient.on("connect", () => {
@@ -155,9 +161,9 @@ class Rr2MqttMain {
 	_publishMqtt(topic, message) {
 		if (this.mqttClient && this.mqttClient.connected) {
 
-			if (topic.endsWith("water_box_custom_mode")) {
-				console.warn("Warte");
-			}
+			// if (topic.endsWith("water_box_custom_mode")) {
+			// 	console.warn("Warte");
+			// }
 
 			if (message && message.startsWith("\"data:image/")) {
 				this._logger.info(`MQTT ${topic} : ${message.substring(0, 30)}...<truncated>..."`);

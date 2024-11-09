@@ -57,10 +57,11 @@ class FakeAdapter extends EventEmitter {
 
 	/**
 	 * x
-	 * @param {any} dps x
+	 * @param {any} duid Device ID
+	 * @param {any} dps Data Point Payload
 	 * @returns xxx
 	 */
-	async modify102(dps, duid) {
+	async modify102(duid, dps) {
 		this._logger.warn(`Customize!! ${JSON.stringify(dps)}`);
 
 		for (const [key, value] of Object.entries(dps)) {
