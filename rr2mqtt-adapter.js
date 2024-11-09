@@ -10,7 +10,6 @@ class FakeAdapter extends EventEmitter {
 
 		this.language = "en";
 
-		// this.options = options;
 		this.config = { ...options.config };
 
 		/** @type {Set<NodeJS.Timeout>} */
@@ -63,9 +62,9 @@ class FakeAdapter extends EventEmitter {
 	 */
 	async modify102(dps, duid) {
 		this._logger.warn(`Customize!! ${JSON.stringify(dps)}`);
-		// this.
+
 		for (const [key, value] of Object.entries(dps)) {
-			// if (Number.isInteger(key)) {
+
 			const homeData = JSON.parse(this.states["HomeData"].val);
 
 			const device = homeData.devices.find(device => device.duid === duid);
@@ -79,11 +78,7 @@ class FakeAdapter extends EventEmitter {
 				});
 			}
 
-
 			console.warn(`${JSON.stringify(se)}`);
-			// [].find(product)
-			// if (homeData.products)
-			// }
 		}
 
 		return dps;
@@ -102,8 +97,8 @@ class FakeAdapter extends EventEmitter {
 	}
 
 	/**
-	 * x
-	 * @param {*} id x
+	 * Subscribe states
+	 * @param {*} id The id
 	 */
 	subscribeStates(id) {
 		this._logger.log(`subscribeStates('${id}')`);
@@ -120,18 +115,19 @@ class FakeAdapter extends EventEmitter {
 	}
 
 	/**
-	 * x
-	 * @param {string} id x
+	 * Emit State change
+	 * @param {string} id The id
+	 * @param {any} state The state
 	 */
-	emitStateChange(id, state0) {
+	emitStateChange(id, state) {
 
 		this.stateSubscriptions.forEach(sub => {
 			if (sub.endsWith("*")) {
 				if (id.startsWith(sub.substring(0, sub.length - 1))) {
-					return this.emit("stateChange", `roborock.0.${id}`, state0);
+					return this.emit("stateChange", `roborock.0.${id}`, state);
 				}
 			} else if (id == sub) {
-				return this.emit("stateChange", `roborock.0.${id}`, state0);
+				return this.emit("stateChange", `roborock.0.${id}`, state);
 			}
 		});
 
@@ -139,19 +135,13 @@ class FakeAdapter extends EventEmitter {
 	}
 
 	async delObjectAsync(id) {
-		// this._logger.log(`deleteStateAsync('${id}')`);
 		delete this.states[id];
-
 		await this._writeStatesToFile();
 	}
 
 	async setStateAsync(id, state, flag) {
 
 		const state0 = flag ? { val: state, ack: true } : state;
-
-		// this._logger.log(`setStateAsync('${id}', '${JSON.stringify(state0)}, ${flag}')`);
-
-		// const oldState = this.states[id];
 
 		// update global state
 		this.states[id] = state0;
@@ -183,16 +173,15 @@ class FakeAdapter extends EventEmitter {
 	}
 
 	async setObjectNotExistsAsync(id, state) {
-		// this._logger.log(`setObjectNotExistsAsync('${id}', '${JSON.stringify(state)}')`);
 		if (!this.objects[id]) {
 			await this.setObjectAsync(id, state);
 		}
 	}
 
 	async setObjectAsync(id, state) {
-		// this._logger.log(`setObjectAsync('${id}', '${JSON.stringify(state)}')`);
 		this.objects[id] = state;
 
+		// emit this update
 		this.emit("objectUpdate", id, state);
 
 		await this._writeObjectsToFile();
