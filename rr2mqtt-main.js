@@ -23,7 +23,7 @@ class Rr2MqttMain {
 				username: process.env["RR_USERNAME"],
 				password: process.env["RR_PASSWORD"],
 				enable_map_creation: true,
-				map_creation_interval: 30,
+				map_creation_interval: 20,
 				map_scale: 4,
 
 				webserverPort: 8081,
@@ -92,8 +92,6 @@ class Rr2MqttMain {
 			if (idSegments[0] === "Devices" && (idSegments[2] === "commands" || idSegments[2] === "programs")) {
 				const command = idSegments[3];
 				await this._onCommand(command, data, duid);
-
-
 			}
 
 		})(topic, message).catch(error => {
@@ -108,7 +106,12 @@ class Rr2MqttMain {
 	 * @param {string} duid Device Id
 	 */
 	async _onCommand(command, data, duid) {
-		if (command === "app_segment_clean") {
+
+		if (command === "get_map") {
+			await this.rradapter.vacuums[duid].getMap(duid);
+			return;
+
+		} else if (command === "app_segment_clean") {
 			const roomFloor = await this.rradapter.getStateAsync(`Devices.${duid}.deviceStatus.map_status`);
 
 			if (!roomFloor) {
