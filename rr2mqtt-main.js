@@ -22,11 +22,17 @@ class Rr2MqttMain {
 			config: {
 				username: process.env["RR_USERNAME"],
 				password: process.env["RR_PASSWORD"],
+
+				// disable webserver, not needed in normal cases
+				enable_webserver: false,
+				webserverPort: 8081,
+
+				// map configuration
 				enable_map_creation: true,
 				map_creation_interval: 20,
 				map_scale: 4,
 
-				webserverPort: 8081,
+				// update interval for general updates
 				updateInterval: 30,
 			}
 		});
@@ -47,6 +53,7 @@ class Rr2MqttMain {
 			that.mqttClient.subscribe(topic);
 		});
 
+		// add to unknown hook of 102 messages
 		this.rradapter.on("unknownMessage102", (duid, dps) => {
 			this.rradapter.modify102(duid, dps).catch(error => {
 				this._logger.error(error);
@@ -161,10 +168,7 @@ class Rr2MqttMain {
 	_publishMqtt(topic, message) {
 		if (this.mqttClient && this.mqttClient.connected) {
 
-			// if (topic.endsWith("water_box_custom_mode")) {
-			// 	console.warn("Warte");
-			// }
-
+			// reduce log data, just for a better overview in logs
 			if (message && message.startsWith("\"data:image/")) {
 				this._logger.info(`MQTT ${topic} : ${message.substring(0, 30)}...<truncated>..."`);
 			} else if(topic && topic.endsWith("map/mapData")) {
@@ -172,6 +176,8 @@ class Rr2MqttMain {
 			} else {
 				this._logger.info(`MQTT ${topic} : ${message}`);
 			}
+
+			// publish topic to local mqtt broker
 			this.mqttClient.publish(topic, message);
 		}
 	}

@@ -3,7 +3,7 @@
 const EventEmitter = require("node:events");
 const fs = require("node:fs");
 
-class FakeAdapter extends EventEmitter {
+class RR2MqttAdapter extends EventEmitter {
 
 	constructor(options) {
 		super();
@@ -56,24 +56,31 @@ class FakeAdapter extends EventEmitter {
 	}
 
 	/**
-	 * x
-	 * @param {any} duid Device ID
+	 * Get Product Attribute for a Device
+	 * @param {*} _duid Device ID
+	 * @param {*} _attribute Attribute key
+	 * @returns {any}
+	 */
+	getProductAttribute(_duid, _attribute) {
+		throw new Error("Not implemented!");
+	}
+
+	/**
+	 * A modify hook for 102 messages
+	 * @param {string} duid Device ID
 	 * @param {any} dps Data Point Payload
-	 * @returns xxx
 	 */
 	async modify102(duid, dps) {
-		this._logger.warn(`Customize!! ${JSON.stringify(dps)}`);
 
+		const schema = this.getProductAttribute(duid, "schema");
+
+		// translate 102 messages with datapoints directly, faster response
 		for (const [key, value] of Object.entries(dps)) {
 
-			const homeData = JSON.parse(this.states["HomeData"].val);
-
-			const device = homeData.devices.find(device => device.duid === duid);
-			const product = homeData.products.find(product => product.id === device.productId);
-
-			const se = product.schema.find(se => se.id === String(key));
+			const se = schema?.find(se => se.id === String(key));
 
 			if (se) {
+				// @TODO: Is deviceStatus always correct?
 				this.setStateAsync(`Devices.${duid}.deviceStatus.${se.code}`, value, true).catch(error => {
 					throw error;
 				});
@@ -81,8 +88,6 @@ class FakeAdapter extends EventEmitter {
 
 			console.warn(`${JSON.stringify(se)}`);
 		}
-
-		return dps;
 	}
 
 	async _writeToFile(filename, data) {
@@ -99,7 +104,7 @@ class FakeAdapter extends EventEmitter {
 
 	/**
 	 * Subscribe states
-	 * @param {*} id The id
+	 * @param {string} id The id
 	 */
 	subscribeStates(id) {
 		this._logger.log(`subscribeStates('${id}')`);
@@ -111,6 +116,7 @@ class FakeAdapter extends EventEmitter {
 			const topic = `${this.config.localMqttPrefix}/${t}`;
 			this._logger.warn(`Add mqtt subscription ${topic} ...`);
 
+			// emit custom event for main
 			this.emit("addMqttTopic", t);
 		}
 	}
@@ -135,6 +141,11 @@ class FakeAdapter extends EventEmitter {
 		return false;
 	}
 
+	async deleteStateAsync(id) {
+		delete this.states[id];
+		await this._writeStatesToFile();
+	}
+
 	async delObjectAsync(id) {
 		delete this.states[id];
 		await this._writeStatesToFile();
@@ -147,7 +158,7 @@ class FakeAdapter extends EventEmitter {
 		// update global state
 		this.states[id] = state0;
 
-		// emit this update
+		// emit this update for main.js
 		this.emit("stateUpdate", id, state0);
 
 		// write file if the state is the rr clientID, we need this after a restart
@@ -182,7 +193,7 @@ class FakeAdapter extends EventEmitter {
 	async setObjectAsync(id, state) {
 		this.objects[id] = state;
 
-		// emit this update
+		// emit this update for main.js
 		this.emit("objectUpdate", id, state);
 
 		await this._writeObjectsToFile();
@@ -204,20 +215,10 @@ class FakeAdapter extends EventEmitter {
 		}
 	}
 
-	/**
-	 * x
-	 * @param {string} _featureName x
-	 * @returns x
-	 */
 	supportsFeature(_featureName) {
 		return false;
 	}
 
-	/**
-	 * x
-	 * @param {*} _name x
-	 * @returns x
-	 */
 	getPluginInstance(_name) {
 		return null;
 	}
@@ -271,5 +272,5 @@ class FakeAdapter extends EventEmitter {
 }
 
 module.exports = {
-	Adapter: FakeAdapter
+	Adapter: RR2MqttAdapter
 };
