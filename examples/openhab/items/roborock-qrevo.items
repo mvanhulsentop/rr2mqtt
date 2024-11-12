@@ -1,0 +1,42 @@
+Group                   gQRevo                          "Staubsauger Roboter"                                   <roborock>         (GF_Kitchen)                                      ["CleaningRobot"]
+Group                   gQRevoStat                      "Status Details"                                        <health>           (gQRevo)
+Group                   gQRevoCons                      "Verbrauchsmaterialien und Wartung"                     <line-increase>    (gQRevo)
+Group                   gQRevoDND                       "Nicht Stören Einstellungen"                            <moon>             (gQRevo)
+Group                   gQRevoHist                      "Reinigungshistorie"                                    <calendar>         (gQRevo)
+Group                   gQRevoCharge                    "Status Details"                                        <health>           (gQRevo)
+
+Number                  QRevoCommandStartProgram        "QRevo Starte Programm"                                 <health>           (gQRevo,gQRevoStat)                               ["Status"]                   {channel="mqtt:topic:broker:qrevo:Program", stateDescription=""[3859311=Vollreinigung, 3885265=Saugen; dann Wischen, 3866287=Unter dem Esstisch, 3868257=Whz Teppich, 3869055=Um den Tisch"], autoupdate="false"}
+String                  QRevoActionCommand              "QRevo Starte Befehl"                                   <health>           (gQRevo,gQRevoStat)                               ["Status"]                   {autoupdate="false"}
+
+Number                  QRevoMapFloor                   "QRevo Karte Etage [MAP(qrevo_map_floor.map):%s]"       <health>           (gQRevo,gQRevoStat)                               ["Status"]                   {channel="mqtt:topic:broker:qrevo:MapFloor", stateDescription=""[options="0=Erdgeschoss, 1=Obergeschoss"]}
+
+
+Number                  QRevoState                      "QRevo Status [MAP(qrevo_state_de.map):%s]"             <health>           (gQRevo,gQRevoStat)                               ["Status"]                   {channel="mqtt:topic:broker:qrevo:DeviceState"}
+Number                  QRevoErrorCode                  "QRevo Fehlermeldung [MAP(qrevo_error.map):%s]"                            (gQRevo)                                                                       {channel="mqtt:topic:broker:qrevo:ErrorCode"}
+Number:Dimensionless    QRevoStatusBat                  "QRevo Akkustand [%d %%]"                               <battery>          (gQRevo,gQRevoStat, gQRevoCharge, gBatteryLvl)    ["Measurement", "Energy"]    {channel="mqtt:topic:broker:qrevo:Battery", unit="%"}
+
+Number                  QRevoCleaningMode               "QRevo Reinigungsmodus [MAP(qrevo_mode.map):%s]"                           (gQRevo)                                                                       {stateDescription=""[options="1=SmartPlan, 2=Vac & Mop, 3=Wischen, 4=Saugen, 5=Induviduell"], autoupdate="false"}
+Number                  QRevoFanPowerMode               "QRevo Saugleistung [MAP(qrevo_fanpower_de.map):%s]"                       (gQRevo)                                                                       {channel="mqtt:topic:broker:qrevo:FanPower"}
+Number                  QRevoWaterBoxMode               "QRevo Wassermenge [MAP(qrevo_waterbox.map):%s]"                           (gQRevo)                                                                       {channel="mqtt:topic:broker:qrevo:WaterBoxMode"}
+Number                  QRevoMopMode                    "QRevo Wischmodus [MAP(qrevo_mop.map):%s]"                                 (gQRevo)                                                                       {channel="mqtt:topic:broker:qrevo:MopMode"}
+
+Number:Time             QRevoConsumableMain             "QRevo Hauptbürste [%d h]"                              <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:ConsMainBrushLife", unit="h"}
+Number:Time             QRevoConsumableSide             "QRevo Seitenbürste [%d h]"                             <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:ConsSideBrushLife", unit="h"}
+Number:Time             QRevoConsumableFilter           "QRevo Filter [%d h]"                                   <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:ConsFilterLife", unit="h"}
+
+Number:Dimensionless    QRevoConsumableMainPercent      "QRevo Hauptbürste Prozent [%d %]"                      <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:ConsMainBrushLifePercent", unit="%"}
+Number:Dimensionless    QRevoConsumableSidePercent      "QRevo Seitenbürste Prozent [%d %]"                     <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:ConsSideBrushLifePercent", unit="%"}
+Number:Dimensionless    QRevoConsumableFilterPercent    "QRevo Filter Prozent [%d %]"                           <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:ConsFilterLifePercent", unit="%"}
+
+
+Switch                  QRevoStationDrying              "QRevo Trocknen [MAP(yesno_de.map):%s]"                 <health>           (gQRevoStat)                                      ["Status"]                   {channel="mqtt:topic:broker:qrevo:DryingStatus", stateDescription=""[readOnly=true]}
+Number                  QRevoStationCleanWater          "QRevo Frischwasser [MAP(qrevo_status.map):%s]"         <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:ClearWaterBoxStatus"}
+Number                  QRevoStationDirtWater           "QRevo Schmutzwasser [MAP(qrevo_status.map):%s]"        <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:DirtyWaterBoxStatus"}
+Number                  QRevoStationDirtBag             "QRevo Staugbeutel [MAP(qrevo_status.map):%s]"          <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:DustBagStatus"}
+Number                  QRevoMopCarriageStatus          "QRevo Wischerhalter [MAP(yesno_de.map):%s]"            <charts>           (gQRevoCons)                                                                   {channel="mqtt:topic:broker:qrevo:MopCarriageStatus"}
+
+Number:Dimensionless    QRevoStatusCleanPercent         "QRevo Gereinigte Fläche [%d %%]"                       <area>             (gQRevoStat)                                                                   {channel="mqtt:topic:broker:qrevo:CleanPercent"}
+Number:Area             QRevoStatusCleanArea            "QRevo Gereinigte Fläche [%d m²]"                       <area>             (gQRevoStat)                                                                   {channel="mqtt:topic:broker:qrevo:CleanArea"}
+Number:Time             QRevoStatusCleanTime            "QRevo Reinigungsdauer [%d min]"                        <clock>            (gQRevoStat)                                                                   {channel="mqtt:topic:broker:qrevo:CleanTime"}
+
+Image                   QRevoCleaningMap                "QRevo Map"                                             <health>           (gQRevo)                                          ["Status"]                   {channel="mqtt:topic:broker:qrevo:MapB64"[profile="transform:JS", toItemScript="base64-image.js" ]}

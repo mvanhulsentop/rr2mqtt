@@ -1,0 +1,45 @@
+Thing mqtt:topic:broker:qrevo "MQTT: Q Revo Pro" (mqtt:broker:broker) @ "MQTT" {
+  Channels:
+
+    Type number : Program "Program" [commandTopic="rr2mqtt/Devices/<DeviceID>/programs/startProgram"]
+
+    Type string : MapB64 "Map Base64" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/map/mapBase64Truncated"]
+    Type number : ErrorCode "Error Code" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/error_code"]
+    Type switch : ChargerStatus "Charger Status" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/charge_status", on="1", off="0"]
+    Type number : Battery "Battery" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/battery", unit="%"]
+    Type number : DeviceState "Device State" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/state"]
+    Type switch : DryingStatus "Drying Status" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/dry_status", on="1", off="0"]
+
+    Type number : MapFloor "Karte Etage" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/map_status",
+      commandTopic="rr2mqtt/Devices/<DeviceID>/commands/load_multi_map"]
+
+    Type number : FanPower "Fan Power" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/fan_power",
+      commandTopic="rr2mqtt/Devices/<DeviceID>/commands/set_custom_mode"]
+    Type number : WaterBoxMode "Water Box Mode" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/water_box_mode",
+      commandTopic="rr2mqtt/Devices/<DeviceID>/commands/set_water_box_custom_mode"]
+    Type number : MopMode "Mop Mode" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/mop_mode",
+      commandTopic="rr2mqtt/Devices/<DeviceID>/commands/set_mop_mode"]
+
+    Type number : RepeatClean "Cleaning Count" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/repeat",
+      commandTopic="rr2mqtt/Devices/<DeviceID>/commands/startProgram"]
+
+    Type number : DeviceOfflineStatus "Offline Status" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceInfo/online"]
+
+    Type number : CleanPercent "Prozent der Reinigung" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/clean_percent", unit="%"]
+    Type number : CleanTime "Dauer der Reinigung" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/clean_time", unit="min"]
+    Type number : CleanArea "Fläche der Reinigung" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/clean_area", unit="m²"]
+
+    Type number : ClearWaterBoxStatus "Reinwassertank Status" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/dockingStationStatus/clearWaterBoxStatus"]
+    Type number : DirtyWaterBoxStatus "Schmutzwassertank Status" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/dockingStationStatus/dirtyWaterBoxStatus"]
+    Type number : DustBagStatus "Staubbeutel Status" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/dockingStationStatus/dustBagStatus"]
+    Type switch : MopCarriageStatus "Wischerhalter Status" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/deviceStatus/water_box_carriage_status", on="1", off="0"]
+
+    Type number : ConsSensorLife "Filter Life" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/consumables/sensor_dirty_time", unit="h"]
+    Type number : ConsFilterLife "Filter Life" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/consumables/filter_work_time", unit="h"]
+    Type number : ConsMainBrushLife "Main Brush Life" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/consumables/main_brush_work_time", unit="h"]
+    Type number : ConsSideBrushLife "Side Brush Life" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/consumables/side_brush_work_time", unit="h"]
+
+    Type number : ConsFilterLifePercent "Filter Life Percent" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/consumables/127", unit="%"]
+    Type number : ConsMainBrushLifePercent "Main Brush Life Percent" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/consumables/126", unit="%"]
+    Type number : ConsSideBrushLifePercent "Side Brush Life Percent" [stateTopic="rr2mqtt/states/Devices/<DeviceID>/consumables/125", unit="%"]
+}
