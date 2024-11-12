@@ -48,6 +48,20 @@ See `rr2mqtt/objects/Devices/[DEVICE-ID]/floors/[NUMBER]` for room names and ids
 | Topic   | `rr2mqtt/Devices/**[DEVICE-ID]**/commands/app_segment_clean` |
 | Payload | `true`                                                       |
 
+#### startProgram
+
+| Key     | Value                                                        |
+| ------- | ------------------------------------------------------------ |
+| Topic   | `rr2mqtt/Devices/[DEVICE-ID]/programs/startProgram` |
+| Payload | `Program ID` |
+
+#### reset_consumables
+
+| Key     | Value                                                        |
+| ------- | ------------------------------------------------------------ |
+| Topic   | `rr2mqtt/Devices/[DEVICE-ID]/reset_consumables/*` |
+| Payload | `?` |
+
 See for more commands [Objekte und ihre Bedeutung](https://github.com/copystring/ioBroker.roborock/wiki/Objekte-und-ihre-Bedeutung#commands) from ioBroker roborock Wiki page.
 
 ## Warning
