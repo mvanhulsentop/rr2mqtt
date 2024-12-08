@@ -6,6 +6,8 @@ There is currently no ready-made image on DockerHub, you have to build the image
 
 ## Getting start
 
+### Docker
+
 - Clone this repository
 - Create a config file `config.env` from `config.template.env`. Add you data in the file.
 - Run `docker-compose` to build an run **rr2mqtt**
@@ -13,6 +15,15 @@ There is currently no ready-made image on DockerHub, you have to build the image
 ```shell
 docker-compose up --build
 ```
+
+### Local
+
+- Clone this repository
+- Run `./prep-local-dev` in a linux shell (MINGW64 on windows) once
+- Change into subdirectory`` cd ioBroker.roborock/``
+- Create a config file `config.env` from `config.template.env`. Add you data in the file.
+  - Replace ``:`` with ``=``
+- Run ``node --env-file=config.env rr2mqtt-main.js`` to start **rr2mqtt**
 
 ## MQTT
 

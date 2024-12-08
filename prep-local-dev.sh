@@ -1,6 +1,8 @@
 # clone a specific tag of the iobRoker roborock adapter
-# git clone -b 'v0.6.17' --single-branch --depth 1 https://github.com/csowada/ioBroker.roborock.git .
-git clone https://github.com/csowada/ioBroker.roborock.git .
+# git clone --single-branch --depth 1 -b 'develop' https://github.com/csowada/ioBroker.roborock.git ./ioBroker.roborock
+
+# clone main branch
+git clone https://github.com/csowada/ioBroker.roborock.git ./ioBroker.roborock
 
 cp ./rr2mqtt-adapter.js ./ioBroker.roborock
 cp ./rr2mqtt-main.js ./ioBroker.roborock
