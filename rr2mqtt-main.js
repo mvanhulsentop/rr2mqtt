@@ -10,6 +10,8 @@ class Rr2MqttMain {
 
 		const that = this;
 		this.localMqttUrl = process.env["LOCAL_MQTT"] || "undefined";
+		this.localMqttUsername = process.env["LOCAL_MQTT_USERNAME"] || undefined;
+		this.localMqttPassword = process.env["LOCAL_MQTT_PASSWORD"] || undefined;
 		this.localMqttPrefix = "rr2mqtt";
 
 		this._logger = console;
@@ -60,7 +62,7 @@ class Rr2MqttMain {
 			});
 		});
 
-		this.mqttClient = mqtt.connect(this.localMqttUrl, {});
+		this.mqttClient = mqtt.connect(this.localMqttUrl, {username: this.localMqttUsername, password: this.localMqttPassword});
 		this.mqttClient.on("message", this._onMessageCallback.bind(this));
 		this.mqttClient.on("connect", () => {
 
