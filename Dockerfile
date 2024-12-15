@@ -5,8 +5,8 @@ RUN apk add --no-cache git sed
 
 WORKDIR /app
 
-#RUN git clone -b 'v0.6.17' --single-branch --depth 1 https://github.com/copystring/ioBroker.roborock.git .
-RUN git clone -b 'main' --single-branch --depth 1 https://github.com/csowada/ioBroker.roborock.git .
+RUN git clone -b 'v0.6.18' --single-branch --depth 1 https://github.com/copystring/ioBroker.roborock.git .
+#RUN git clone -b 'main' --single-branch --depth 1 https://github.com/csowada/ioBroker.roborock.git .
 
 RUN npm remove @iobroker/adapter-core && npm ci --omit=dev && npm install jszip
 
