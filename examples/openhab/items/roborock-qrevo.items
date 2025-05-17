@@ -5,7 +5,7 @@ Group                   gQRevoDND                       "Nicht Stören Einstellu
 Group                   gQRevoHist                      "Reinigungshistorie"                                    <calendar>         (gQRevo)
 Group                   gQRevoCharge                    "Status Details"                                        <health>           (gQRevo)
 
-Number                  QRevoCommandStartProgram        "QRevo Starte Programm"                                 <health>           (gQRevo,gQRevoStat)                               ["Status"]                   {channel="mqtt:topic:broker:qrevo:Program", stateDescription=""[3859311=Vollreinigung, 3885265=Saugen; dann Wischen, 3866287=Unter dem Esstisch, 3868257=Whz Teppich, 3869055=Um den Tisch"], autoupdate="false"}
+Number                  QRevoCommandStartProgram        "QRevo Starte Programm"                                 <health>           (gQRevo,gQRevoStat)                               ["Status"]                   {channel="mqtt:topic:broker:qrevo:Program", stateDescription=""[options="3859311=Vollreinigung, 3885265=Saugen; dann Wischen, 3866287=Unter dem Esstisch, 3868257=Whz Teppich, 3869055=Um den Tisch"], autoupdate="false"}
 String                  QRevoActionCommand              "QRevo Starte Befehl"                                   <health>           (gQRevo,gQRevoStat)                               ["Status"]                   {autoupdate="false"}
 
 Number                  QRevoMapFloor                   "QRevo Karte Etage [MAP(qrevo_map_floor.map):%s]"       <health>           (gQRevo,gQRevoStat)                               ["Status"]                   {channel="mqtt:topic:broker:qrevo:MapFloor", stateDescription=""[options="0=Erdgeschoss, 1=Obergeschoss"]}
